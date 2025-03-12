@@ -1,11 +1,9 @@
 import Link from "next/link";
 import { getServerSession } from "next-auth";
-import { authOptions } from "../_lib/auth"; // Importa le opzioni di autenticazione
+import { auth, authOptions } from "../_lib/auth"; // Importa le opzioni di autenticazione
 
 export default async function Navigation() {
-  const session = await getServerSession(authOptions); // Ottieni la sessione lato server
-  console.log("Server Session:", session);
-
+const session = auth();
   return (
     <nav className="z-10 text-xl">
       <ul className="flex gap-16 items-center">

@@ -1,6 +1,7 @@
 // app/_lib/auth.js
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
+import { createGuest, getGuest } from "./data-service";
 
 const authOptions = {
   providers: [
@@ -10,9 +11,26 @@ const authOptions = {
     }),
   ],
   callbacks: {
-    async signIn({ user, account, profile, email, credentials }) {
-      // Qui puoi aggiungere logica per controllare se l'utente è autorizzato
-      return true; // Permetti l'accesso
+    authorized({ auth, request }) {
+      return !!auth?.user;
+    },
+    async signIn({ user, account, profile }) {
+      try {
+        console.log('user:', user)
+        const existingGuest = await getGuest(user.email);
+        console.log(existingGuest);
+        if (!existingGuest) {
+          await createGuest({ email: user.email, fullName: user.name });
+        }
+        return true;
+      } catch (error) {
+        return false;
+      }
+    },
+    async session({ session }) {
+      const guest = await getGuest(session.user.email);
+      session.user.guestId = guest.id;
+      return session;
     },
   },
   pages: {
@@ -20,10 +38,10 @@ const authOptions = {
   },
 };
 
-const handler = NextAuth(authOptions);
-
-export { handler as GET, handler as POST };
-
+export const {
+  auth,
+  signIn,
+  signOut,
+  handlers: { GET, POST },
+} = NextAuth(authOptions);
 // Export the signIn and signOut functions from the same instance
-const { signIn, signOut } = NextAuth(authOptions);
-export { signIn, signOut };
