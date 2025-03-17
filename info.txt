@@ -1,0 +1,9 @@
+server actions attivano la possibilità di creare full stack applications
+sono async functions che funzionano solo sul server
+però queste funzioni possono essere esportate ovunque
+
+use,server non è per i server components ma per i server actions
+Next js mi crea un API endpoint per ogni server action. 
+Server Actions hanno bisogno di un server. 
+Servono di solito per inviare form element,event handlers, useEffect
+Si fa una data mutation e si deve riconvalidare la UI with the new data. 
