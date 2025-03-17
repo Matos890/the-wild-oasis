@@ -30,7 +30,7 @@ export async function generateStaticParams() {
 
 export default async function Page({ params }) {
   const cabin = await getCabin(params.cabinId);
-
+console.log('questi sono i params', params.cabinId)
   const { id, name, maxCapacity, regularPrice, discount, images, description } =
     cabin;
 
